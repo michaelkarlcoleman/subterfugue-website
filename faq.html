@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3.0//EN">
+<html>
+  <head>
+    <title>SUBTERFUGUE FAQ</title>
+  </head>
+
+  <body bgcolor="#FFFFFF">
+
+      <h1>SUBTERFUGUE FAQ</h1>
+
+      <h3>How is SUBTERFUGUE's process following different than strace's?</h3>
+
+      <p>
+	strace does not yet follow the clone system call, and it follows vfork
+	by rewriting it to fork.  SUBTERFUGUE follows these calls closely
+	(though CLONE_PTRACE is not implemented).
+
+      <p>
+	strace's emulation of the wait4 system call is pretty rudimentary.  It
+	stops the waiting parent, making it insensible to most signals, it
+	doesn't discern between waiting on process groups versus waiting on
+	all children, and it doesn't handle the WUNTRACED or __WCLONE flags
+	nor the rusage argument.  Consequently, strace has problems following
+	job control.  SUBTERFUGUE does a more faithful emulation by rewriting
+	wait4 to pause (thus obviating the need to stop the parent), but it
+	also does not yet handle the rusage argument.
+
+      <p>
+	strace can attach to running processes.  SUBTERFUGUE does not yet
+	support this.
+
+      <p>
+	strace, of course, works on many different Unix platforms.
+	SUBTERFUGUE runs only on Linux and might be impossible to port to
+	non-free Unixes.
+
+      <p>
+	strace is implemented entirely in C and, at least for now, is much
+	faster than SUBTERFUGUE.
+
+  </body>
+</html>

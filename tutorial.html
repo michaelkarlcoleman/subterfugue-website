@@ -1,0 +1,479 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3.0//EN">
+<html>
+  <head>
+    <title>SUBTERFUGUE tutorial</title>
+  </head>
+
+  <body bgcolor="#FFFFFF">
+
+      <h1>SUBTERFUGUE Tutorial</h1>
+
+      <h3>Invoking SUBTERFUGUE</h3>
+
+      <p>
+	The SUBTERFUGUE driver is called "sf", and an invocation might look
+	like this
+
+      <blockquote>
+	  <tt>
+	    sf --trick=Trace:'call=["open", "close"]' cp filea fileb
+	  </tt>
+      </blockquote>
+
+      <p>
+	This runs the command "cp filea fileb" under the influence of one
+	Trace trick.  The text that follows the colon in a trick option is
+	Python code used to pass options to the trick.  In this case, a single
+	option "call" is set to a value which is a list consisting of two
+	strings ("open" and "close").  The single quote characters here
+	merely protect the construct from being interpreted by the shell.
+
+      <p>
+	It's up to each trick to determine which options it looks for and what
+	values are acceptible.  The code to set options can be more involved;
+	the above, for example, could have been written this way
+
+      <blockquote>
+	  <tt>
+	    --trick=Trace:'_a=["open"]; _b=["close"]; call=_a + _b'	
+	  </tt>
+      </blockquote>
+
+      <p>
+	The "-h" flag can be used to get "sf" usage information.  You can
+	combine the "-h" flag with "--trick" options to get usage information
+	about one or more tricks.
+
+      <p>
+	Multiple tricks can be specified in an sf command.  In this case, the
+	leftmost trick gets the first shot at any system call.  The second
+	leftmost trick then gets the next shot, if the leftmost trick didn't
+	annul the call, and so on.  Each successive trick sees the call as it
+	is passed, so, for example, if the first trick rewrites a call
+	"sleep(1)" to "sleep(10)", then as far as the second trick is
+	concerned, it sees only that the process is invoking "sleep(10)".  A
+	similar chaining process applies to system call results and signals.
+
+      <p>
+	The sf command looks for tricks in the "tricks" subdirectory of its
+	installation directory, but additional locations can be added by
+	setting the environment variable TRICKPATH to a list of directories
+	(&agrave; la PATH).
+
+      <p>
+	Unless the "--failnice" flag is given, sf will attempt to SIGKILL all
+	of its children if it (or a trick) has to abort for any reason.  This
+	is to prevent the child processes from continuing on uncontrolled
+	(which is what happens if "--filenice" is specified).
+
+      <h3>Writing New Tricks</h3>
+
+      <p>
+	In this section, we'll walk through a series of increasingly powerful
+	and complicated tricks, in order to demonstrate and explain the trick
+	interface.  (If you're interested in a terse description of the
+	interface, see <tt>Trick.py</tt>.)
+
+      <h4>Delay</h4>
+
+      <p>
+	This first trick is probably the simplest useful trick.  Here is the
+	code, from DelayTrick.py
+
+      <blockquote>
+	  <pre>
+from Trick import Trick
+
+import time
+
+
+class Delay(Trick):
+    def usage(self):
+        return """
+        Puts a delay before each system call.  The 'delay' parameter specifies
+        the delay in seconds (as a float).  The default delay is one second.
+"""
+    
+    def __init__(self, options):
+        self._delay = options.get('delay', 1)
+
+    def callbefore(self, pid, call, args):
+        time.sleep(self._delay)
+	  </pre>
+      </blockquote>
+
+      <p>
+	Like all tricks, this trick inherits from the base class Trick, which
+	provides default versions of any methods we don't define in our trick.
+	The usage method simply returns an explanatory string that sf can
+	display to the user.  (To save space, we'll skip the usage method and
+	import statements for the rest of the tricks.)
+
+      <p>
+	The trick constructor, "__init__", is run during sf startup and is
+	passed an argument "options" which is a dictionary holding the trick's
+	command-line options.
+
+      <p>
+	The method "callbefore" is called before each system call (subject to
+	the call mask, which we describe later).  In this trick, this method
+	just sleeps for the specified amount of time, which has the effect of
+	delaying each system call.
+
+      <p>
+	This trick is very simple, but already we're able to do something not
+	possible with available tools.
+
+
+      <h4>Count</h4>
+
+      <p>
+	This trick counts the system calls invoked by and signals received by
+	each process, and reports these statistics after the command finishes.
+	In this trick, we see two new methods: "signal", which is called for
+	every delivered signal, and "cleanup", which is called once after all
+	processes have terminated.
+
+      <p>
+	More of the information available is being used here.  The argument
+	'pid' is the process id of the process in question, and 'call' and
+	'signal' are the names of the system call or signal, respectively,
+	that is occurring.
+
+      <blockquote>
+	  <pre>
+class Count(Trick):
+    def __init__(self, options):
+        self.callcount = {}
+        self.sigcount = {}
+
+    def callbefore(self, pid, call, args):
+        if not self.callcount.has_key(pid):
+            self.callcount[pid] = {}
+        self.callcount[pid][call] = self.callcount[pid].get(call, 0) + 1
+
+    def signal(self, pid, signal):
+        if not self.sigcount.has_key(pid):
+            self.sigcount[pid] = {}
+        self.sigcount[pid][signal] = self.sigcount[pid].get(signal, 0) + 1
+
+    def cleanup(self):
+        for pid in self.callcount.keys():
+            print 'process %s\n' % pid
+            for call, count in self.callcount[pid].items():
+                print '%6d\t%s' % (count, call)
+            if self.sigcount.has_key(pid):
+                print ''
+                for sig, count in self.sigcount[pid].items():
+                    print '%6d\t%s' % (count, sig)
+            print '\n'
+	  </pre>
+      </blockquote>
+
+      <p>
+	Here is the output from its use with the 'date' command.
+
+      <blockquote>
+	  <pre>
+bash-2.03$ sf --tri=Count date
+Wed Feb  2 01:10:22 CST 2000
+process 8634
+
+     1	personality
+     4	fstat
+     4	open
+     1	_exit
+     4	close
+     1	time
+     1	getpid
+     4	brk
+     1	ioctl
+     3	munmap
+     1	write
+     1	mprotect
+     6	mmap
+     4	read
+	  </pre>
+      </blockquote>
+
+
+      <h4>ThrottleIO</h4>
+
+      <p>
+	This trick throttles I/O (that done by the read and write system
+	calls) by sleeping before each read and write for a duration depending
+	on the number of bytes to be written and the I/O rate limit.
+
+      <blockquote>
+	  <pre>
+class ThrottleIO(Trick):
+    def __init__(self, options):
+        if options.has_key('bps'):
+            self.bps = options['bps']
+        else:
+            sys.exit("error: %s: option required" % self.__class__.__name__)
+
+    def callbefore(self, pid, call, args):
+        time.sleep(float(args[2]) / self.bps)
+        
+    def callmask(self):
+        return { 'read' : 1, 'write' : 1 }
+	  </pre>
+      </blockquote>
+
+      <p>
+	There are several new things to note here.  A new method, callmask, is
+	defined.  This method determines which system calls cause the methods
+	callbefore and callafter to be invoked.  callmask returns a
+	dictionary, each key of which is the name of a system call to be
+	traced; it can also just return None (the Python null value), which
+	means that all system calls are traced (this is the default if no
+	callmask method is defined).  There is a corresponding method called
+	signalmask, which determines which signals are traced.
+
+      <p>
+	The 'args' argument of callbefore holds the sequence of arguments to
+	the system call.  In this case, the third argument of read and write
+	is examined to determine how many bytes are being read or written.
+
+      <p>
+	Finally, we see that sys.exit is being used to abort sf if something
+	goes wrong.
+
+
+      <h4>NetFail</h4>
+
+      <p>
+	This trick causes connect calls to fail.  This can be used to keep a
+	program from accessing the network.
+
+      <blockquote>
+	  <pre>
+class NetFail(Trick):
+    def callbefore(self, pid, call, args):
+        subcall = args[0]
+        if subcall == 3:                # SYS_CONNECT
+            return (None, -errno.EHOSTUNREACH, None, None)
+        else:
+            return (subcall, None, None, None)
+
+    def callafter(self, pid, call, result, state):
+        assert state != 3
+
+    def callmask(self):
+        return { 'socketcall' : 1 }
+	  </pre>
+      </blockquote>
+
+      <p>
+	In this trick we are exposed to a bit of ugliness in the Linux kernel.
+	Although the network calls (socket, bind, connect, etc.) are normally
+	thought of as distinct system calls, in current Linux kernels they
+	are all multiplexed together into one call named "socketcall".  The
+	first argument determines which subcall is being performed--an
+	argument of '3', for example, corresponds to a connect call.
+
+      <p>
+	When a connect call is performed we see that a four-tuple is returned
+	whose second element is "-errno.EHOSTUNREACH".  When a tuple is
+	returned from callbefore and its second element is not None, the call
+	is annulled and the second element returned as its result.  In this
+	case we are causing the call to fail with error result EHOSTUNREACH;
+	the value is negated because that is the kernel's convention for
+	returning error codes.
+
+      <p>
+	If a non-connect case of socketcall occurs, this callbefore method
+	returns a four-tuple whose first argument is the subcall number.  Any
+	Python object may be passed back as a first argument in this case;
+	such an object will be passed to the callafter method as its state
+	argument.  This provides a means for a callbefore invocation to pass
+	data to the corresponding callafter call.  In this case, we're just
+	double-checking that the callafter method is never invoked for the
+	connect case; it's never invoked because it is always annulled
+	instead, as described above.
+
+
+      <h4>Rot13</h4>
+
+      <p>
+	This trick causes output done with the write system call to be
+	rot13-translated.  (In a rot13 translation, each letter is replaced
+	with its thirteenth successor, wrapping around if necessary.)  This
+	could be used to improve the security of a program, even if you don't
+	have source code for it.  Okay--that was just a little joke.
+
+      <p>
+	This trick makes use of the Memory class.  Each instance of Memory is
+	an abstraction that represents the memory space of a particular
+	process.  The callbefore method retrieves the particular memory object
+	associated with the current process and uses it to do a "peek" to get
+	the data that is about to be written.  (Note how the address and size
+	of the data is taken from the arguments to the write system call.)
+	The data is then transformed and written back into the process'
+	memory.  
+
+      <p>
+	One of the conditions that makes this work is that the data we're
+	writing back is the same size as what was originally there.  If we
+	were writing a larger string, we would have to do this in a different
+	way, or risk smashing the stack or causing an error by writing to a
+	page not present in the process' memory space.  (We address this
+	problem in the next section.)
+
+      <p>
+	The astute reader will note that the original data needs to be
+	restored after the system call.  The calling program will not expect a
+	write call to change the data written, and if this is done, the
+	program may very well act erroneously or crash.  How is the data
+	restored?  If the "poke" call is given a third argument (which is
+	always "self", the current trick), the poked data is restored after
+	the corresponding callafter method has completed.  So, if the third
+	argument is given, the poke is only temporary; otherwise, it is
+	permanent.
+
+      <blockquote>
+	  <pre>
+trans = string.maketrans('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                         'nopqrstuvwxyzabcdefghijklmNOPQRSTUVWXYZABCDEFGHIJKLM')
+
+class Rot13(Trick):
+    def callbefore(self, pid, call, args):
+        m = getMemory(pid)
+        address = args[1]
+        size = args[2]
+        data = m.peek(address, size)
+        m.poke(address, string.translate(data, trans), self)
+
+    def callmask(self):
+        return { 'write' : 1 }
+	  </pre>
+      </blockquote>
+
+      <p>
+	Here is the output from a couple of uses of this trick:
+
+      <blockquote>
+	  <pre>
+bash-2.03$ sf --tri=Rot13 date
+Jrq Sro  2 02:55:34 PFG 2000
+bash-2.03$ sf --tri=Rot13 --tri=Rot13 date
+Wed Feb  2 02:55:37 CST 2000
+	  </pre>
+      </blockquote>
+
+      <p>
+	Note in particular how applying the trick twice causes the effect to
+	cancel out (two rotations of 13 is equivalent to a rotation of 26,
+	which is equivalent to no rotation).  This is an example of how tricks
+	can be composed for a combined effect.
+
+      <p>
+	For just rewriting stdout, this trick is markedly inferior to the
+	simpler
+
+      <blockquote>
+	  <pre>
+date | tr a-zA-Z n-za-mN-ZA-M
+	  </pre>
+      </blockquote>
+
+      <p>
+	It does show, though, how the user can exert control over program
+	output even when the program was not written to support this (as in
+	the case where output is sent directly to a named file).
+
+
+      <h4>LineDisclaimer</h4>
+
+      <p>
+	You work at MegaSilly CCA, and the legal department there has decided
+	that henceforth each line of all program output ought to have its own
+	copyright statement.  Since hacking SUBTERFUGUE sounds like more fun
+	than arguing with legal, you set to work, producing the following
+	trick.  (For simplicity, this trick just adds a disclaimer at the end
+	of each write, whether or not it ends a line.)
+
+      <blockquote>
+	  <pre>
+disclaimer = """Copyright (C) %s  MegaSilly CCA.  All rights reserved.
+""" % gmtime(time())[0]
+
+class LineDisclaimer(Trick):
+    def callbefore(self, pid, call, args):
+        "append disclaimer bytes to the end of each write"
+        m = getMemory(pid)
+        address = args[1]
+        size = args[2]
+        data = m.peek(address, size)
+        area, asize = m.areas()[0]
+        newsize = size + len(disclaimer)
+        if newsize <= asize:
+            m.poke(area, data + disclaimer, self)
+            return (size, None, None, (args[0], area, newsize))
+
+    def callafter(self, pid, call, result, state):
+        "don't let program see that we wrote extra bytes"
+        if state != None and result > state:
+            return state
+
+    def callmask(self):
+        return { 'write' : 1 }
+	  </pre>
+      </blockquote>
+
+      <p>
+	This produces output like this
+
+      <blockquote>
+	  <pre>
+bash-2.03$ sf --tri=LineDisclaimer date
+Thu Feb  3 00:24:19 CST 2000
+Copyright (C) 2000  MegaSilly CCA.  All rights reserved.
+	  </pre>
+      </blockquote>
+
+      <p>
+	In this trick we are changing each write call to make it write out a
+	longer string than the program originally intended.  This makes things
+	trickier, because, as we discussed above, we can't just tack the extra
+	bytes on in place.  Instead, we poke the new, longer string elsewhere
+	in memory.
+
+      <p>
+	The "areas" method of Memory provides a list of writable memory areas
+	that we might use as scratchpad space.  In this simple implementation,
+	we just use the first available area.  The write call argument list is
+	modified so that the address and length to be written are those of the
+	new string.  We also pass the original size of the write through the
+	state argument; if the write is successful, this is passed back as the
+	result of the call so that the program doesn't see that we've written
+	extra bytes.  The callafter method shows how we can make the call
+	return a different value than the one returned by the kernel.
+
+      <p>
+	This simple implementation has a couple of problems.  Under some
+	conditions, only a partial write will be done.  If the partial write
+	is such that the original string is written plus part of the
+	disclaimer, it would be nice if we could cause the rest of the
+	disclaimer to be written out.  We can't really do this reliably,
+	though, unless we can replace one write with multiple write calls.
+	(This capability will probably be added in a future version of
+	SUBTERFUGUE.)
+
+      <p>
+	Another problem is that overwriting arbitrary memory is dangerous if
+	the process shares that memory with another process (or it is mmap-ed
+	to a file).  This problem will also be addressed in the future.
+
+      <h3>Conclusion</h3>
+
+      <p>
+	Hopefully this tutorial has given you a sense of what SUBTERFUGUE is
+	capable of.  It's not a catholicon (a panacea)--some problems can only
+	be solved partially or with excessive cleverness, and others not at
+	all.  It does, though, provide new means of solving problems; the goal
+	is for it to become an additional useful tool in the hacker's bag of
+	tricks.
+  </body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0 Level 2//EN">
+<html>
+  <head>
+    <title>SUBTERFUGUE patches</title>
+  </head>
+
+  <body bgcolor="#FFFFFF">
+
+    <h1>SUBTERFUGUE Patches</h1>
+
+    <h3>Kernel Patch</h3>
+
+    <p>
+      As of Linux 2.3.39, a patch is required in order to run SUBTERFUGUE.
+      With any luck, it might be incorporated for 2.4.  The patch should work
+      down to at least 2.3.35, and might even work on 2.2.x with adjustments.
+
+    <ul>
+      <li><a href="ptrace-subterfugue-2.3.39.patch.gz">patch for kernel 2.3.39</a>
+      <li><a href="ptrace-subterfugue-2.3.42.patch.gz">patch for kernel
+      2.3.42</a> (not yet tested)
+    </ul>
+
+    <p>
+      Here are the changes included in the patch.  Most are fairly innocuous
+      extensions, but the first two might break some things.
+
+      <ol>
+
+      <li>The exit_code reported during PTRACE_SYSCALL stops now has its high
+	bit (0x80) set, to distinguish it from signal stops.  Unfortunately,
+	this breaks <a
+	href="http://www.wi.leidenuniv.nl/~wichert/strace/"><tt>strace</tt></a>,
+	and probably any other program that uses PTRACE_SYSCALL (see
+	ptrace(2)).  The fix is pretty simple--just mask off the high bit (or
+	adapt the program to make use of the extra information).  A <a
+	href="strace-trap.patch.gz">patch</a> is available that does this for
+	strace.  (It doesn't appear that <tt>gdb</tt> is affected.)
+
+      <li>When a new child is created with clone and CLONE_PARENT is set, and
+	the child is being traced (e.g., it's done a PTRACE_TRACEME), it will
+	now report to the first process' parent.  This is correct behavior,
+	but it opens up what some would consider a security hole--a malicious
+	child might unexpectedly invoke PTRACE_TRACEME, causing it to report
+	to a waiting parent process that never expected to hear from it.  This
+	was discussed on linux-kernel for a bit; there didn't seem to be a
+	consensus about whether this was even a hole at all.
+
+      <li>A new wait flag __WALL is implemented, to allow clone and non-clone
+	children to be waited for simultaneously.
+
+      <li>A new ptrace command PTRACE_GETPPID is implemented, which lets a
+	tracing process discover the original parent of a traced child.  This
+	information is otherwise unavailable.
+
+      <li>Exits of the system calls fork, vfork, and clone are now reported.
+
+      </ol>
+
+  </body>
+</html>

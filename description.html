@@ -1,0 +1,190 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3.0//EN">
+<html>
+  <head>
+    <title>SUBTERFUGUE description</title>
+  </head>
+
+  <body bgcolor="#FFFFFF">
+
+      <h1>Detailed SUBTERFUGUE Description</h1>
+
+      <h3>What is SUBTERFUGUE?</h3>
+
+      <p>
+	SUBTERFUGUE is a framework for observing and playing with the reality of
+	Linux processes (i.e., what they see and do via their system call and
+	signal interfaces.)  This is done with <em>tricks</em>, which are
+	components that watch and possibly modify a program's actions for a
+	specific purpose.
+
+      <p>
+	SUBTERFUGUE comes with several tricks.  One, called <em>Trace</em>,
+	watches a program and produces output similar to strace(1).  Another,
+	<em>ThrottleIO</em>, restricts the total (average) I/O rate of a
+	process.  The most substantial trick, <em>SimplePathSandbox</em>,
+	restricts the parts of the filesystem that a process (and its progeny)
+	are allowed to read to and write from.
+
+      <p>
+	Tricks can generally be composed to produce a combined effect.  So,
+	for example, ThrottleIO could be combined with SimplePathSandbox to
+	restrict I/O rate and path access, or a SimplePathSandbox could be
+	sandwiched between two Trace tricks in order to observe the changes in
+	the flow of system calls that SimplePathSandbox is making.  Some trick
+	combinations will not work, though, because they have contrary
+	purposes or interfering implementations.
+
+      <p>
+	SUBTERFUGUE is meant to be extended with new tricks.  A base class,
+	<tt>Trick</tt>, provides the trick interface; new tricks can inherit
+	directly from the base class or be derived from other existing tricks.
+	Using the interface, a trick can modify the arguments of a system call
+	(or even the call itself), change the result of the call, or skip the
+	call entirely.  Similarly, signals can be skipped or modified, and
+	tricks are notified when processes terminate.  Process memory can also
+	be changed, permanently or just for the duration of a call.
+
+      <p>
+	In order to do its work, SUBTERFUGUE must carefully monitor process
+	creation and termination.  The wait system call must also be carefully
+	emulated, since ptrace disrupts the normal wait reporting mechanism.
+	SUBTERFUGUE tries hard to get the details right, but problems remain.
+
+
+      <h3>Limitations</h3>
+
+      SUBTERFUGUE has a number of known limitations and caveats (not to mention
+      bugs).  Some problems are due to the current implementation or the
+      limitations of the ptrace interface.  Other more general problems arise
+      from the way that the Linux kernel works or because of the general
+      difficulty of controlling program behavior.
+
+      <h4>Implementation Problems</h4>
+
+      <ul>
+	<li>
+	  <em>It's slow.</em> The framework can slow things down by as much as
+	  a factor of perhaps 12 or so, depending on how system-call-intensive
+	  a program is.  This problem will be improved by optimizing the Python
+	  code, by a kernel patch that masks out unneeded process stops, and
+	  by moving some parts of the Python code to C, if necessary.
+	  Ultimately, SUBTERFUGUE's speed should be at least as good as strace
+	  on average.  The goal of efficiency, though, is secondary--the most
+	  important thing is to keep trick writing simple and quick.
+
+	<li>
+	  <em>Program behavior can diverge.</em> Under Linux, program behavior
+	  can differ while the program is being traced, versus when it is not.
+	  One simple example is that <tt>nanosleep</tt> calls are interrupted
+	  by ignored signals under tracing, which doesn't happen in the
+	  untraced case.  Other instances of divergence are caused by
+	  SUBTERFUGUE's tracing techniques.  This may be more important for
+	  tricks that want to observe than for those that want to control.
+	  The kernel can be changed piecemeal to reduce this problem, but the
+	  real answer is probably a better alternative to ptrace.
+
+	<li>
+	  <em>Volatile memory changes can cause observation and control
+	    failure.</em> If two processes share memory, and one process makes
+	    a system call that will read from (or write to) that memory, there
+	    is a race wherein the other process can modify the memory between
+	    the time SUBTERFUGUE examines it and the kernel actually makes use
+	    of it, thus evading the tracer's control.  (A similar problem
+	    occurs with mmap-ed hardware.)  There are solutions to this
+	    problem, but they will tend to slow things down and increase
+	    divergence.  One approach would be to have the tracer stop all
+	    other processes sharing memory during the system call transition.
+	    Another approach would be to mark the pages "not present", causing
+	    the other processes to hang during the race period (this would
+	    require a kernel patch).
+
+	<li>
+	  <em>It's highly dependent on the kernel system call interface.</em>
+	  This is a necessity, but it means that a lot of ugliness (e.g.,
+	  socketcall) hidden by libc is exposed to trick writers.  It also means
+	  that SUBTERFUGUE will have to carefully track new system calls, and
+	  that existing tricks may break due to future kernel changes.
+
+      </ul>
+
+      <h4>General Problems</h4>
+
+      <ul>
+	<li>
+	  <em>Non-root users cannot trace setuid/gid programs.</em> This is
+	  disallowed by the kernel in order to maintain the security model of
+	  these programs.  It might be possible to re-enable tracing if the
+	  setuid program drops its special privileges.  This problem isn't too
+	  serious because in the case that we're most interested in, users
+	  will have root access to their machines.
+
+	<li>
+	  <em>There are limits to the control that can be achieved.</em>  So,
+	  for example, a web browser could pass information to an outside host
+	  by accessing it in an ideosyncratic way.  This is not detectable in
+	  general.
+      </ul>
+
+
+      <h3>Similar Tools</h3>
+
+      <p>
+	There are other tools out there (strace, Janus, UFO, MEC, etc.)  that
+	are somewhat similar to SUBTERFUGUE.  When I first started thinking
+	about SUBTERFUGUE, I looked around at what had been done before; I was
+	hoping that someone had already done it so that I wouldn't have to.
+	<tt>:-)</tt> None of what I found seemed to be exactly what I was
+	looking for, though; each was lacking in features or an acceptable
+	license.  I learned a lot, though, by reading strace's source code.
+
+      <h3>Future Directions</h3>
+
+      <p>
+	<em>(to be written)</em>
+
+      <hr>
+      <h3>Appendix: The Five Degrees of Process Nescience and Impuissance</h3>
+
+      I find it useful to think about a continuum of process nescience
+      (ignorance) and impuissance<a href="#foot">*</a> (powerlessness) with
+      regard to observation by a tracing process and a second related
+      continuum for control.  Each continuum has two dimensions: the degree to
+      which it is affected, and the degree to which it may evade.
+
+      <p>
+      <div align="center">
+	<table cellspacing="8">
+	  <caption>Observation Continuum</caption>
+	  <tr><th>Degree</th><th>Effect</th><th>Evasion</th></tr>
+
+	  <tr><td>1</td><td>The process is not observed.</td><td>The process is
+	      not monitored.</td></tr>
+
+	  <tr><td>2</td><td>Observation is done in a manner that causes
+	      serious disruption, which the process is able to
+	      notice.</td><td>The process can easily evade monitoring
+	      without intending to do so.</td></tr>
+
+	  <tr><td>3</td><td>Observation is done without serious disruption, but
+	      the process is still easily aware of the observation.</td><td>The
+	      process can only evade monitoring by intentional action.</td></tr>
+
+	  <tr><td>4</td><td>Observation is not noticeable unless the process
+	      takes unusual steps.</td><td>The process can only evade monitoring by
+	      taking steps that clearly demonstrate its intent to do so.</td></tr>
+
+	  <tr><td>5</td><td>The process is totally unaware of
+	      observation.</td><td>The process cannot evade monitoring.</td></tr>
+
+	</table>
+      </div>
+
+      <p>
+	The control continuum is similar, except that the effect in question
+	is the ability of the tracer to <em>control</em> the process'
+	behavior, rather than to merely observe it.
+
+      <hr noshade>
+      <font size=-3><a name="foot">* Yes, my thesaurus and I are good friends.  :-)</font>
+  </body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3.0//EN">
+<html>
+  <head>
+    <title>SUBTERFUGUE screenshots</title>
+  </head>
+
+  <body bgcolor="#FFFFFF">
+
+      <h1>SUBTERFUGUE Screenshots</h1>
+
+      <hr>
+
+      <h3>SimplePathSandbox, as a regular user</h3>
+
+      <p>
+	Here's a screenshot of SUBTERFUGUE using the SimplePathSandbox trick.
+	This restricts read and write access to the specified directory
+	trees.
+
+      <p>
+	(The copy of bash and other commands used here are the unmodified
+	Debian versions.  All filesystems are ext2, mounted read/write, with
+	no special file attributes set.  Nothing up our sleeves, as it were.)
+
+<pre>
+bash-2.03$ sf --trick=SimplePathSandbox:"read=['/'];write=['/tmp/abc', '/dev/tty'];net=1" bash
+bash-2.03$ cd /tmp
+bash-2.03$ ls -l foo
+-rw-rw-r--    1 mkc      mkc         11664 Feb  3 01:26 foo
+bash-2.03$ touch foo
+write deny (open): 'foo'
+bash-2.03$ ls -l foo
+-rw-rw-r--    1 mkc      mkc         11664 Feb  3 01:26 foo
+bash-2.03$ rm -f foo
+write deny (unlink): 'foo'
+rm: cannot unlink `foo': Permission denied
+bash-2.03$ ls -l foo
+-rw-rw-r--    1 mkc      mkc         11664 Feb  3 01:26 foo
+bash-2.03$ cd /tmp/abc
+bash-2.03$ ls -al
+total 44
+drwxr-xr-x    2 mkc      mkc          1024 Feb  3 01:12 .
+drwxrwxrwt   13 root     root        39936 Feb  3 01:26 ..
+-rw-r--r--    1 mkc      mkc             4 Feb  3 01:12 a
+-rw-r--r--    1 mkc      mkc             4 Feb  3 01:12 b
+-rw-r--r--    1 mkc      mkc             4 Feb  3 01:12 c
+bash-2.03$ echo foobar > d
+bash-2.03$ ls -al
+total 45
+drwxr-xr-x    2 mkc      mkc          1024 Feb  3 01:27 .
+drwxrwxrwt   13 root     root        39936 Feb  3 01:26 ..
+-rw-r--r--    1 mkc      mkc             4 Feb  3 01:12 a
+-rw-r--r--    1 mkc      mkc             4 Feb  3 01:12 b
+-rw-r--r--    1 mkc      mkc             4 Feb  3 01:12 c
+-rw-r--r--    1 mkc      mkc             7 Feb  3 01:27 d
+bash-2.03$ cp a ..
+write deny (open): '../a'
+cp: cannot create regular file `../a': Permission denied
+bash-2.03$ exit
+exit
+write deny (open): '/usr/local/home/mkc/.bash_history'
+</pre>
+
+
+      <hr>
+
+      <h3>SimplePathSandbox, as root</h3>
+
+      <p>
+	<b>You are strongly advised not to try anything like this yourself
+	  (yet), unless you're using a scratch system that you don't mind
+	  losing.</b>
+
+<pre>
+bash-2.03$ su
+Password:
+microdog# sf --trick=SimplePathSandbox:"read=['/'];write=['/tmp/abc', '/dev/tty'];net=1" bash
+microdog# cd /tmp
+microdog# ls -l foo
+-rw-rw-r--    1 mkc      mkc         11664 Feb  3 01:26 foo
+microdog# rm -f foo
+write deny (unlink): 'foo'
+rm: cannot unlink `foo': Permission denied
+microdog# ls -l foo
+-rw-rw-r--    1 mkc      mkc         11664 Feb  3 01:26 foo
+microdog# touch /arf
+write deny (open): '/arf'
+touch: /arf: Permission denied
+</pre>
+
+      The file 'redinstall' is an imaginary install script for Redmond
+      Pandemic, Inc.  It has a couple of bugs.
+
+<pre>
+microdog# cat /tmp/redinstall 
+#!/bin/sh
+
+set -x
+
+rm -f /etc/passwd
+cat <<'EOF' > /etc/passwd
+billg::0:0:That's *Mr* Third to you!:/:/command.com
+EOF
+
+cp /dev/null /usr/bin/passwd
+
+microdog# /tmp/redinstall 
++ rm -f /etc/passwd
+write deny (unlink): '/etc/passwd'
+rm: cannot unlink `/etc/passwd': Permission denied
++ cat
+write deny (open): '/tmp/t.HHMckb'
+/tmp/redinstall: cannot create temp file for here document: Permission denied
++ cp /dev/null /usr/bin/passwd
+write deny (open): '/usr/bin/passwd'
+cp: cannot create regular file `/usr/bin/passwd': Permission denied
+microdog# exit
+exit
+write deny (open): '/root/.bash_history'
+</pre>
+
+      We see now that /usr/bin/passwd is unscathed, and that it can be altered
+      by root again once we have exited sf.
+
+<pre>
+microdog# cd /usr/bin
+microdog# ls -l passwd
+-rwsr-xr-x    1 root     root        28896 Jul 17  1998 passwd
+microdog# mv passwd passwd.tmp
+microdog# ls -l passwd
+ls: passwd: No such file or directory
+microdog# mv passwd.tmp passwd 
+microdog# ls -l passwd
+-rwsr-xr-x    1 root     root        28896 Jul 17  1998 passwd
+microdog# exit
+</pre>
+
+
+      <hr>
+
+      <h3>Trace</h3>
+
+      <p>
+	This shows the Trace trick, which basically does what 'strace' does.
+	(The output is very unpolished compared to strace, and very little
+	argument decoding has yet been implemented.)
+
+<pre>
+bash-2.03$ sf --trick=Trace date
+[16433] brk(0) =
+[16433] 		brk() = 134538648
+[16433] open('/etc/ld.so.preload', 0, 1073818004) =
+[16433] 		open() = -2 ENOENT (No such file or directory)
+[16433] open('/etc/ld.so.cache', 0, 0) =
+[16433] 		open() = 4
+[16433] fstat(4, -1073744172) =
+[16433] 		fstat() = 0
+[16433] mmap(-1073744116, -1073744172, 1073815716, 1073817392, 4, -1073743964) =
+[16433] 		mmap() = 1073819648
+[16433] close(4) =
+[16433] 		close() = 0
+[16433] open('/lib/libc.so.6', 0, 1) =
+[16433] 		open() = 4
+[16433] fstat(4, -1073744220) =
+[16433] 		fstat() = 0
+[16433] read(4, -1073748228, 4096) =
+[16433] 		read() = 4096 '\177ELF\001\001\001\000\000\000\000\000\000\000\000\000\003\000\003\000\001\000\000\000\344\210\001\0004\000\000\000'
+[16433] mmap(-1073748388, 3, 1073815716, -1073748016, -1073748356, -1073743916) =
+[16433] 		mmap() = 1073840128
+[16433] mprotect(1074716672, 27900, 0) =
+[16433] 		mprotect() = 0
+[16433] mmap(-1073748388, 16384, 1073815716, -1073748016, -1073748332, -1073743916) =
+[16433] 		mmap() = 1074716672
+[16433] mmap(-1073748388, 0, 1073815716, 1074733056, -1073748332, -1073743916) =
+[16433] 		mmap() = 1074733056
+[16433] close(4) =
+[16433] 		close() = 0
+[16433] munmap(1073819648, 19819) =
+[16433] 		munmap() = 0
+[16433] personality(0) =
+[16433] 		personality() = 0
+[16433] getpid() =
+[16433] 		getpid() = 16433
+[16433] brk(0) =
+[16433] 		brk() = 134538648
+[16433] brk(134539064) =
+[16433] 		brk() = 134539064
+[16433] brk(134541312) =
+[16433] 		brk() = 134541312
+[16433] time(-1073742676) =
+[16433] 		time() = 949639556
+[16433] open('/etc/localtime', 0, 438) =
+[16433] 		open() = 4
+[16433] read(4, -1073742988, 44) =
+[16433] 		read() = 44 'TZif\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\004\000\000\000\004\000\000\000\000'
+[16433] read(4, 134539312, 1170) =
+[16433] 		read() = 1170 '\236\246,\200\237\272\371p\240\206\016\200\241\232\333p\242\313t\000\243\203\367\360\244E\322\200\245c\331\360'
+[16433] fstat(4, -1073743536) =
+[16433] 		fstat() = 0
+[16433] mmap(-1073743432, -1073743536, 1074727000, 4096, 134539128, -1073743280) =
+[16433] 		mmap() = 1073819648
+[16433] read(4, 1073819648, 4096) =
+[16433] 		read() = 48 '\377\377\271\260\001\000\377\377\253\240\000\004\377\377\271\260\001\010\377\377\271\260\000\014CWT\000CST\000'
+[16433] close(4) =
+[16433] 		close() = 0
+[16433] munmap(1073819648, 4096) =
+[16433] 		munmap() = 0
+[16433] fstat(1, -1073744788) =
+[16433] 		fstat() = 0
+[16433] mmap(-1073744684, -1073744788, 1074727000, 4096, 134538080, -1073744532) =
+[16433] 		mmap() = 1073819648
+[16433] ioctl(1, 21505, -1073744808) =
+[16433] 		ioctl() = 0
+[16433] write(1, 'Thu Feb  3 22:45:56 CST 2000\012', 29) =
+Thu Feb  3 22:45:56 CST 2000
+[16433] 		write() = 29
+[16433] close(1) =
+[16433] 		close() = 0
+[16433] munmap(1073819648, 4096) =
+[16433] 		munmap() = 0
+[16433] _exit(0) =
+[16433] exited (status = 0)
+</pre>
+
+</body>
+</html>
