@@ -50,6 +50,11 @@
 
     <h2>Trying it out</h2>
     <p>
+      You can <b>download</b> the latest version of SUBTERFUGUE from the
+      <a href="http://sourceforge.net/project/?group_id=1951">SUBTERFUGUE
+      project page</a> at SourceForge.
+
+    <p>
       SUBTERFUGUE is written in <a href="http://www.python.org">Python</a>,
       except for an included Python module, <tt>python-ptrace</tt>, which is
       written in C.  Python 1.5.2 is recommended, and you'll need <em>gcc</em>
@@ -126,3 +131,8 @@ This page has been visited <? echo $count ?> times.</font><br>
 
   </body>
 </html>
+
+<!-- Local Variables:
+     mode:sgml
+     End:
+-->

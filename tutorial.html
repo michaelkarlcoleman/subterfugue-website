@@ -322,15 +322,14 @@ class NetFail(Trick):
 	problem in the next section.)
 
       <p>
-	The astute reader will note that the original data needs to be
-	restored after the system call.  The calling program will not expect a
-	write call to change the data written, and if this is done, the
-	program may very well act erroneously or crash.  How is the data
-	restored?  If the "poke" call is given a third argument (which is
-	always "self", the current trick), the poked data is restored after
-	the corresponding callafter method has completed.  So, if the third
-	argument is given, the poke is only temporary; otherwise, it is
-	permanent.
+	Note that the original data needs to be restored after the system
+	call.  The calling program will not expect a write call to change the
+	data written, and if this is done, the program may very well act
+	erroneously or crash.  How is the data restored?  If the "poke" call
+	is given a third argument (which is always "self", the current trick),
+	the poked data is restored after the corresponding callafter method
+	has completed.  So, if the third argument is given, the poke is only
+	temporary; otherwise, it is permanent.
 
       <blockquote>
 	  <pre>
