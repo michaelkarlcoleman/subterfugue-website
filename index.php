@@ -7,7 +7,7 @@
   <body bgcolor="#FFFFFF">
     <img src="subterfugue.png" alt="SUBTERFUGUE">
     <hr noshade>
-    <em>Latest Version: 0.0 ("slaughter")</em>  <b>NOT YET RELEASED</b>
+    <em>Latest Version: 0.0 ("slaughter")</em>
     <hr noshade>
 
     <p>
@@ -85,7 +85,7 @@
 
     <h2>License</h2>
     <p>
-      SUBTERFUGUE is, and always will be, available under the
+      SUBTERFUGUE is (and always will be) available under the
       <a href="http://www.gnu.org/copyleft/gpl.html#SEC1">GNU Public License</a>.
 
     <h2>Thanks</h2>

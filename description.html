@@ -63,14 +63,16 @@
 
       <ul>
 	<li>
-	  <em>It's slow.</em> The framework can slow things down by as much as
-	  a factor of perhaps 12 or so, depending on how system-call-intensive
-	  a program is.  This problem will be improved by optimizing the Python
-	  code, by a kernel patch that masks out unneeded process stops, and
-	  by moving some parts of the Python code to C, if necessary.
-	  Ultimately, SUBTERFUGUE's speed should be at least as good as strace
-	  on average.  The goal of efficiency, though, is secondary--the most
-	  important thing is to keep trick writing simple and quick.
+	  <em>It's slow.</em> Compared to 'strace', it's perhaps ten times
+	  slower, depending upon how system-call-intensive a program is.  As
+	  an example, the subjective feel of Netscape Navigator is a little
+	  faster than running it on a remote X display over a 28.8 modem.
+	  This problem will be improved by optimizing the Python code, by a
+	  kernel patch to mask out unneeded process stops, and by moving parts
+	  of the Python code to C.  Ultimately, SUBTERFUGUE's speed should be
+	  at least as good as strace on average.  The goal of efficiency,
+	  though, is secondary--the most important thing is to keep trick
+	  writing simple and quick.
 
 	<li>
 	  <em>Program behavior can diverge.</em> Under Linux, program behavior
@@ -129,13 +131,30 @@
       <h3>Similar Tools</h3>
 
       <p>
-	There are other tools out there (strace, Janus, UFO, MEC, etc.)  that
-	are somewhat similar to SUBTERFUGUE.  When I first started thinking
-	about SUBTERFUGUE, I looked around at what had been done before; I was
-	hoping that someone had already done it so that I wouldn't have to.
-	<tt>:-)</tt> None of what I found seemed to be exactly what I was
-	looking for, though; each was lacking in features or an acceptable
-	license.  I learned a lot, though, by reading strace's source code.
+	When I first started thinking about SUBTERFUGUE, I looked around at
+	what had been done before; I was hoping that someone had already done
+	it so that I wouldn't have to.  <tt>:-)</tt> None of what I found
+	seemed to be exactly what I was looking for, though; each had
+	different features or goals or lacked an acceptable license.  (I did
+	get a lot of ideas, though, from reading strace's source code.)
+
+      <p>
+	Here are some related tools I've run across, in no particular order:
+      <ul>
+	<li><a href="http://www.wi.leidenuniv.nl/~wichert/strace/">strace</a>
+	(system call tracing, several Unix platforms, ok license)
+	<li><a href="http://medusa.fornax.sk/">Medusa DS9</a> (GPL)
+	<li><a href="http://www.cs.berkeley.edu/~daw/janus/">Janus</a>
+	(sandbox, Solaris 2, BSD license, not maintained?)
+	<li><a href="http://www.cs.ucsb.edu/research/ufo/">Ufo/Consh</a>
+	(sandbox, remote file access, Solaris 2.5, source upon request?, not
+	maintained?)
+	<li><a href="ftp://ftp.shout.net/pub/users/mec/qtrace/">qtrace/mec</a>
+	(trace/replay debugging, GPL, not functional, maintained?)
+	<li>Pavel Machek's "strace -y" patch
+	<li>Monkey-in-the-Middle (system call rewriting, GPL, not
+	maintained?)
+      </ul>
 
       <h3>Future Directions</h3>
 
