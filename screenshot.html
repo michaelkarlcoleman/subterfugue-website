@@ -14,13 +14,17 @@
 
       <p>
 	Here's a screenshot of SUBTERFUGUE using the SimplePathSandbox trick.
-	This restricts read and write access to the specified directory
-	trees.
+	This trick restricts read and write access to the specified directory
+	trees.  In this example, we're specifying that all files may be read,
+	but that only /tmp/abc (and the files it contains, recursively, since
+	it's a directory here) and /dev/tty may be written.  (The 'net=1'
+	means that network access is enabled.)
 
       <p>
-	(The copy of bash and other commands used here are the unmodified
-	Debian versions.  All filesystems are ext2, mounted read/write, with
-	no special file attributes set.  Nothing up our sleeves, as it were.)
+	The copy of bash and other commands used here are the unmodified
+	Debian versions.  All filesystems are ext2, mounted read/write from
+	ordinary disks, with no special file attributes set.  Nothing up our
+	sleeves, as it were.
 
 <pre>
 bash-2.03$ sf --trick=SimplePathSandbox:"read=['/'];write=['/tmp/abc', '/dev/tty'];net=1" bash

@@ -11,13 +11,18 @@
     <h3>Kernel Patch</h3>
 
     <p>
-      <strong>Good News:</strong> As of Linux 2.3.99-pre1, SUBTERFUGUE can be
-      run without this patch; the <tt>--waitchannelhack</tt> flag must be used
-      in this case.  The patch below is still recommended, though; as
-      SUBTERFUGUE will run slower without it.
+      <strong>Good News:</strong>All of these patches have been merged into
+      the kernel as of 2.4.0-test10!
+
+    <p>
+      As of Linux 2.3.99-pre1, SUBTERFUGUE can be run without this patch; the
+      <tt>--waitchannelhack</tt> flag must be used in this case.  The patch
+      below is still recommended, though; as SUBTERFUGUE will run slower
+      without it.
 
     <ul>
       <li><a href="ptrace-subterfugue-2.4.0-test9.patch.gz">patch for kernel 2.4.0-test9</a> 
+	[Not needed for 2.4.0-test10 and later.]
       <li><a href="ptrace-subterfugue-2.3.99-pre1.patch.gz">patch for kernel 2.3.99-pre1</a> 
 	[These patches require SUBTERFUGUE 0.1.2 or later, and include only
 	chunks for the first change below (the other changes are merged into
@@ -70,7 +75,8 @@
 	ptrace(2)).  The fix is pretty simple--just mask off the high bit (or
 	adapt the program to make use of the extra information).  A <a
 	href="strace-trap.patch.gz">patch</a> is available that does this for
-	strace.  (It doesn't appear that <tt>gdb</tt> is affected.)
+	strace.  (It doesn't appear that <tt>gdb</tt> is affected.)  (Update:
+	Merged in 2.4.0-test10.)
 
       <li>When a new child is created (i.e., with clone, fork, or vfork), and
 	the child is being traced (e.g., it's done a PTRACE_TRACEME), it will

@@ -6,15 +6,15 @@
 
   <body>
 
-      <h1>SUBTERFUGUE Motivation</h1>
+      <h1><a href="http://subterfugue.org">SUBTERFUGUE</a> Motivation</h1>
 
       <h3>Why was SUBTERFUGUE written?</h3>
 
       <p>
 	We users of <a
-	"http://www.gnu.org/gnu/why-gnu-linux.html">GNU/Linux</a> and other
-	Unix-like operating systems (collectively referred to here as *nix)
-	sometimes indulge in a bit of smugness when we read about the
+	href="http://www.gnu.org/gnu/why-gnu-linux.html">GNU/Linux</a> and
+	other Unix-like operating systems (collectively referred to here as
+	*nix) sometimes indulge in a bit of smugness when we read about the
 	ceaseless wave upon wave of viruses that plague those hapless legions
 	of the damned--Microsoft Windows users.  To a degree this feeling is
 	justified, as the security features of Windows are a generation behind
@@ -29,13 +29,15 @@
 	When people think of *nix security problems, they usually think of
 	transitory security lapses caused by implementation and administration
 	mistakes, rather than the broken-by-design problems of Windows.
-	Historically, security has been thought of as a user-versus-root
+	Historically, security has been thought of as a
+	<a name="user-versus-root">user-versus-root</a>
 	problem.
 
       <p>
 	Today, though, the user frequently <em>is</em> root (being the owner
-	and primary user of their Freenix PC) and faces instead the more
-	insidious user-versus-application problem.  Suppose you download a
+	and primary user of his Freenix PC) and faces instead the more
+	insidious <a name="user-versus-application">user-versus-application</a> 
+	problem.  Suppose you download a 
 	viewer application from Redmond Pandemic, Inc., and run it.  At that
 	point, that application can do just about anything that you could do
 	using your account.  It can, for example
@@ -55,30 +57,32 @@
 	<li>etc., etc.
       </ul>
 
-      A lot of this you would probably detect eventually, and for some of
-      these cases, you might have an action against RPI, assuming that you
-      could pinpoint them as the cause and summon the resources to engage them
+      Much of this you would probably detect eventually, and for some of these
+      cases, you might have an action against RPI, assuming that you could
+      pinpoint them as the cause and summon the resources to engage them
       legally.  In the mean time, though, you could suffer great, irreparable
       harm.
 
       <p>
 	A related problem is the system administrator's dilemma one might call
-	<em>root roulette</em>.  In this situation, the administrator must run
+	<a name="root-roulette"><em>root roulette</em></a>.  In this
+	situation, the administrator must run 
 	some program (e.g., an installation program) as root, thereby putting
-	their entire system at the mercy of that program.  (This is
-	disturbingly similar to the case of Windows users running "run me"
+	his entire system at the mercy of that program.  (This is disturbingly
+	similar to the case of Windows users blithely executing "run me"
 	programs they receive in their email.)
 
       <p>
-	It is theoretically possible to do this safely by disconnecting the
-	host from all networks (assuming the program doesn't need a network
-	connection), and carefully comparing the state of all files before and
-	after the program in question is run to ensure that nothing untoward
-	was done.  This is simply unworkable in practice, though.
+	It is theoretically possible to run the root program safely by
+	disconnecting the host from all networks (assuming the program doesn't
+	need a network connection), and carefully comparing the state of all
+	files before and after the program in question is run to ensure that
+	nothing untoward was done.  This is, though, simply unworkable in
+	practice.
 
       <p>
 	So far, problems due to these shortcomings are relatively rare.  This
-	may be partly due to *nix's limited use as a client OS up to this
+	may be due in part to *nix's limited use as a client OS up to this
 	point.  But this respite won't last.
 
       <p>
@@ -86,10 +90,10 @@
 	computer as your property--they see <em>you</em>, or at least your
 	behavior while running their software, as <em>their</em> property.  We
 	see them pushing, stretching the boundaries all the time.  Increases
-	in computing power and network bandwidth and changes in the
-	legislative environment are making it all the more tempting for these
-	entities to "borrow" part of your computer, and by extension part of
-	<em>you</em>, for their purposes.
+	in computing power and network bandwidth and changes in the political
+	and legislative environment are making it all the more tempting for
+	these entities to "borrow" part of your computer, and by extension
+	part of <em>you</em>, for their purposes.
 	  
       <p>
 	<strong>The primary goal of SUBTERFUGUE is to help you keep control of
@@ -107,5 +111,15 @@
       <p>
 	SUBTERFUGUE exists to shift power back to where it belongs--to you.
 
+      <hr>
+      Related readings:
+      <ul>
+	<li><a href="http://catless.ncl.ac.uk/Risks/21.17.html#subj5">IBM and
+	Intel push copy protection into ordinary disk drives.</a>
+	<li><a
+	href="http://www.wired.com/news/technology/0%2c1282%2c44112%2c00.html">The
+	Noped worm will send accusatory email, with identifying details, to
+	authorities if it thinks you have child pornography on your hard disk.</a>
+      </ul>
   </body>
 </html>
