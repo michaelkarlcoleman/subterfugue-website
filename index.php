@@ -7,7 +7,7 @@
   <body bgcolor="#FFFFFF">
     <img src="subterfugue.png" alt="SUBTERFUGUE">
     <hr noshade>
-    <em>Latest Version: 0.0 ("slaughter")</em>
+    <em>Latest Version: 0.1.1 ("sanchez")</em>
     <hr noshade>
 
     <p>

@@ -18,6 +18,9 @@
     <ul>
       <li><a href="ptrace-subterfugue-2.3.39.patch.gz">patch for kernel 2.3.39</a>
       <li><a href="ptrace-subterfugue-2.3.42.patch.gz">patch for kernel 2.3.42</a>
+      <li><a href="ptrace-subterfugue-2.3.48.patch.gz">patch for kernel 2.3.48</a> 
+	[The last two chunks listed below were merged into 2.3.48 (!), so this
+	patch is shorter.]
     </ul>
 
     <p>
@@ -36,21 +39,22 @@
 	href="strace-trap.patch.gz">patch</a> is available that does this for
 	strace.  (It doesn't appear that <tt>gdb</tt> is affected.)
 
-      <li>When a new child is created with clone and CLONE_PARENT is set, and
+      <li>When a new child is created (i.e., with clone, fork, or vfork), and
 	the child is being traced (e.g., it's done a PTRACE_TRACEME), it will
-	now report to the first process' parent.  This is correct behavior,
-	but it opens up what some would consider a security hole--a malicious
-	child might unexpectedly invoke PTRACE_TRACEME, causing it to report
-	to a waiting parent process that never expected to hear from it.  This
-	was discussed on linux-kernel for a bit; there didn't seem to be a
+	now report to the correct parent.  Without this patch, for most cases,
+	the wrong parent is being reported to.  This patch is correct, but it
+	opens up what some would consider a security hole--a malicious child
+	might unexpectedly invoke PTRACE_TRACEME, causing it to report to a
+	waiting parent process that never expected to hear from it.  This was
+	discussed on linux-kernel for a bit; there didn't seem to be a
 	consensus about whether this was even a hole at all.
-
-      <li>A new wait flag __WALL is implemented, to allow clone and non-clone
-	children to be waited for simultaneously.
 
       <li>A new ptrace command PTRACE_GETPPID is implemented, which lets a
 	tracing process discover the original parent of a traced child.  This
 	information is otherwise unavailable.
+
+      <li>A new wait flag __WALL is implemented, to allow clone and non-clone
+	children to be waited for simultaneously.
 
       <li>Exits of the system calls fork, vfork, and clone are now reported.
 
