@@ -11,9 +11,17 @@
     <h3>Kernel Patch</h3>
 
     <p>
-      As of Linux 2.3.39, a patch is required in order to run SUBTERFUGUE.
-      With any luck, it might be incorporated for 2.4.  The patch should work
-      down to at least 2.3.35, and might even work on 2.2.x with adjustments.
+      <strong>Good News:</strong> As of Linux 2.3.99-pre1, SUBTERFUGUE can be
+      run without this patch; the <tt>--waitchannelhack</tt> flag must be used
+      in this case.  The patch below is still recommended, though; as
+      SUBTERFUGUE will run significantly slower without it.
+
+    <p>
+      For kernels prior to 2.3.99-pre1, a patch is required in order to run
+      SUBTERFUGUE.  We're working on getting the required features
+      incorporated for 2.4 (as the progression of patches shows).  The 2.3.39
+      patch should work down to at least 2.3.35, and might even work on 2.2.x
+      with adjustments.
 
     <ul>
       <li><a href="ptrace-subterfugue-2.3.39.patch.gz">patch for kernel 2.3.39</a>
@@ -21,6 +29,17 @@
       <li><a href="ptrace-subterfugue-2.3.48.patch.gz">patch for kernel 2.3.48</a> 
 	[The last two chunks listed below were merged into 2.3.48 (!), so this
 	patch is shorter.]
+      <li><a href="ptrace-subterfugue-2.3.51.patch.gz">patch for kernel 2.3.51</a> 
+	[This patch requires SUBTERFUGUE 0.1.2 or later, and includes only
+	chunks for the first two items (GETPPID is no longer needed).  This
+	patch is backward compatible with existing versions of strace--the
+	strace patch below isn't required (and won't work) with this patch.]
+      <li><a href="ptrace-subterfugue-2.3.99-pre1.patch.gz">patch for kernel 2.3.99-pre1</a> 
+	[This patch requires SUBTERFUGUE 0.1.2 or later, and includes only
+	chunks for the first item (the second change was merged in
+	2.3.99-pre1).  As above, this patch is backward compatible with
+	existing versions of strace--the strace patch below isn't required
+	(and won't work) with this patch.]
     </ul>
 
     <p>
@@ -47,16 +66,19 @@
 	might unexpectedly invoke PTRACE_TRACEME, causing it to report to a
 	waiting parent process that never expected to hear from it.  This was
 	discussed on linux-kernel for a bit; there didn't seem to be a
-	consensus about whether this was even a hole at all.
+	consensus about whether this was even a hole at all.  (Update: Merged
+	in 2.3.99-pre1.)
 
       <li>A new ptrace command PTRACE_GETPPID is implemented, which lets a
 	tracing process discover the original parent of a traced child.  This
-	information is otherwise unavailable.
+	information is otherwise unavailable.  (Update: As of about 2.3.51,
+	this info will be available in <tt>/proc</tt>.)
 
       <li>A new wait flag __WALL is implemented, to allow clone and non-clone
-	children to be waited for simultaneously.
+	children to be waited for simultaneously.  (Update: Merged in 2.3.48.)
 
       <li>Exits of the system calls fork, vfork, and clone are now reported.
+	(Update: Merged in 2.3.48.)
 
       </ol>
 

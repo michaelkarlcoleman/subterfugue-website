@@ -7,7 +7,7 @@
   <body bgcolor="#FFFFFF">
     <img src="subterfugue.png" alt="SUBTERFUGUE">
     <hr noshade>
-    <em>Latest Version: 0.1.1 ("sanchez")</em>
+    <em>Latest Version: 0.1.9 ("pagliacci")</em>
     <hr noshade>
 
     <p>
@@ -34,7 +34,6 @@
       <li>a <em><a href="description.html">description</a></em> with more detail on
 	SUBTERFUGUE's many features and <b>limitations</b>
 
-
       <li>a <em><a href="tutorial.html">tutorial</a></em>, which walks through the
 	steps of using and writing new tricks for SUBTERFUGUE
 
@@ -59,8 +58,11 @@
       except for an included Python module, <tt>python-ptrace</tt>, which is
       written in C.  Python 1.5.2 is recommended, and you'll need <em>gcc</em>
       and <em>make</em> to build the python-ptrace module.  SUBTERFUGUE
-      currently runs only under Linux 2.3.x (tested for x = 35, 39) and
-      requires a kernel <a href="patches.html">patch</a>.
+      currently runs only under Linux 2.3.39-pre1 or later.  A kernel <a
+      href="patches.html">patch</a> is required for kernels before
+      2.3.99-pre1.  For later kernels, a patch is recommended, but SUBTERFUGUE
+      will run (more slowly) without it, using the <tt>--waitchannelhack</tt>
+      flag.
       
     <p>
       SUBTERFUGUE is pretty alpha.  You definitely shouldn't use it in a
@@ -71,17 +73,19 @@
     <p>
       Please report bugs to <a
       href="http://lists.sourceforge.net/mailman/listinfo/subterfugue-dev">subterfugue-dev</a>.
-      Comments, criticism, and code are also welcome (not to mention
-      postcards, chocolate, hardware, job offers, etc).
+      Comments, criticism, and code are also welcome, not to mention donations
+      of excess cash (or excessive donations of cash).
 
     <p>
       If you'd like to get announcements of new releases, add yourself to the
       <a href="http://lists.sourceforge.net/mailman/listinfo/subterfugue-announce">subterfugue-announce</a>
       list.  If you'd like to follow along or get involved, add yourself to <a
       href="http://lists.sourceforge.net/mailman/listinfo/subterfugue-dev">subterfugue-dev</a>.
+      CVS commits are posted to <a
+      href="http://lists.sourceforge.net/mailman/listinfo/subterfugue-cvs-commits">subterfugue-cvs-commits</a>.
       One good place to start would be to try writing some tricks of your own;
-      another would be to work on squashing bugs (which are still rampant).
-      There's plenty of other stuff, too--just ask!
+      another would be to work on squashing bugs (which, surprisingly enough,
+      still exist).  There's plenty of other stuff, too--just ask!
 
     <h2>License</h2>
     <p>
