@@ -4,7 +4,7 @@
     <title>SUBTERFUGUE</title>
   </head>
 
-  <body bgcolor="#FFFFFF">
+  <body bgcolor="#FFFFFF" text="#000000">
     <img src="subterfugue.png" alt="SUBTERFUGUE">
     <hr noshade>
     <em>Latest Version: 0.1.9 ("pagliacci")</em>
@@ -31,19 +31,20 @@
     <h2>Documentation</h2>
     <ul>
 
-      <li>a <em><a href="description.html">description</a></em> with more detail on
-	SUBTERFUGUE's many features and <b>limitations</b>
+      <li>a <em><a href="description.html">description</a></em> with more
+	detail on SUBTERFUGUE's many features and <b>limitations</b>
 
-      <li>a <em><a href="tutorial.html">tutorial</a></em>, which walks through the
-	steps of using and writing new tricks for SUBTERFUGUE
+      <li>the <em><a href="motivation.html">motivation</a></em> behind
+	SUBTERFUGUE
 
-      <!-- <li>the <a href="motivation.html">motivation</a> behind SUBTERFUGUE -->
-      <li>the <em>motivation</em> behind SUBTERFUGUE (not yet written)
+      <li>some <em><a href="screenshot.html">screenshots</a></em>, giving
+	concrete examples of what you can do with SUBTERFUGUE
+
+      <li>a <em><a href="tutorial.html">tutorial</a></em>, which walks through
+	the steps of using and writing new tricks for SUBTERFUGUE
 
       <li>a <em><a href="faq.html">FAQ</a></em> list
 
-      <li>some <em><a href="screenshot.html">screenshots</a></em> of
-      SUBTERFUGUE in action
     </ul>
 
 
@@ -54,54 +55,51 @@
       project page</a> at SourceForge.
 
     <p>
+      SUBTERFUGUE still has rough edges.  You probably shouldn't use it in a
+      production environment at this point.
+
+    <p>
       SUBTERFUGUE is written in <a href="http://www.python.org">Python</a>,
       except for an included Python module, <tt>python-ptrace</tt>, which is
-      written in C.  Python 1.5.2 is recommended, and you'll need <em>gcc</em>
-      and <em>make</em> to build the python-ptrace module.  SUBTERFUGUE
-      currently runs only under Linux 2.3.39-pre1 or later.  A kernel <a
-      href="patches.html">patch</a> is required for kernels before
-      2.3.99-pre1.  For later kernels, a patch is recommended, but SUBTERFUGUE
-      will run (more slowly) without it, using the <tt>--waitchannelhack</tt>
-      flag.
-      
-    <p>
-      SUBTERFUGUE is pretty alpha.  You definitely shouldn't use it in a
-      production environment yet.  I'd probably wait a bit longer to release
-      it into the wild, but I'm hoping to convince Linus to incorporate the
-      above patch for 2.4.
+      written in C.  Python 1.5.2 or later is recommended, and you'll need
+      <em>gcc</em> and <em>make</em> to build the python-ptrace module.
+      SUBTERFUGUE currently runs only under Linux 2.3.39-pre1 or later.
 
     <p>
-      Please report bugs to <a
-      href="http://lists.sourceforge.net/mailman/listinfo/subterfugue-dev">subterfugue-dev</a>.
-      Comments, criticism, and code are also welcome, not to mention donations
-      of excess cash (or excessive donations of cash).
+      <b>As of 2.3.99-pre1, no kernel patch is required to run
+      SUBTERFUGUE!</b> There is still a <a href="patches.html">patch</a>, but
+      SUBTERFUGUE will run without it--just a bit more slowly (see the
+      <tt>--waitchannelhack</tt> flag).  For earlier kernel versions, a kernel
+      <a href="patches.html">patch</a> is required.
+
+    <h2>Mailing Lists</h2>
+
+    <ul>
+      <li><a href="http://lists.sourceforge.net/mailman/listinfo/subterfugue-announce">subterfugue-announce</a> 
+	- new release and other important announcements
+      <li><a href="http://lists.sourceforge.net/mailman/listinfo/subterfugue-dev">subterfugue-dev</a>
+	- developer traffic
+      <li><a href="http://lists.sourceforge.net/mailman/listinfo/subterfugue-cvs-commits">subterfugue-cvs-commits</a>
+	- cvs commit logs
+    </ul>
 
     <p>
-      If you'd like to get announcements of new releases, add yourself to the
-      <a href="http://lists.sourceforge.net/mailman/listinfo/subterfugue-announce">subterfugue-announce</a>
-      list.  If you'd like to follow along or get involved, add yourself to <a
-      href="http://lists.sourceforge.net/mailman/listinfo/subterfugue-dev">subterfugue-dev</a>.
-      CVS commits are posted to <a
-      href="http://lists.sourceforge.net/mailman/listinfo/subterfugue-cvs-commits">subterfugue-cvs-commits</a>.
-      One good place to start would be to try writing some tricks of your own;
-      another would be to work on squashing bugs (which, surprisingly enough,
-      still exist).  There's plenty of other stuff, too--just ask!
+      Please send bug reports, comments, and patches to subterfugue-dev.
 
     <h2>License</h2>
     <p>
-      SUBTERFUGUE is (and always will be) available under the
+      SUBTERFUGUE is <a href="http://www.gnu.org/philosophy/free-sw.html">free
+      software</a>, and may be redistributed and used under the terms of the 
       <a href="http://www.gnu.org/copyleft/gpl.html#SEC1">GNU Public License</a>.
 
     <h2>Thanks</h2>
     <p>
-      I'd like to thank the guys at <a
-      href="http://sourceforge.net">SourceForge</a> for providing an
-      &uuml;ber-cool hosting environment for SUBTERFUGUE.  I'd also like to
-      thank VA Linux and Red Hat for their generosity (read "directed
-      shares"), which has allowed me to spend more of my time on this project.
+      Thanks to <a
+      href="http://sourceforge.net">SourceForge</a> for providing their
+      &uuml;ber-cool hosting environment for SUBTERFUGUE.
 
     <p>
-      <a href="http://www.kc.net/~mkc/">Mike Coleman</a><br>
+      <a href="http://home.kc.rr.com/mikecoleman/">Mike Coleman</a><br>
       <a href="mailto:mkc@subterfugue.org">&lt;mkc@subterfugue.org></a>,
       <a href="mailto:mkc@users.sourceforge.net">&lt;mkc@users.sourceforge.net></a><br>
 

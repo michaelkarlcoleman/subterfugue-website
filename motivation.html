@@ -4,56 +4,65 @@
     <title>SUBTERFUGUE motivation</title>
   </head>
 
-  <body bgcolor="#FFFFFF">
+  <body>
 
       <h1>SUBTERFUGUE Motivation</h1>
 
-      <h3>Why SUBTERFUGUE?</h3>
+      <h3>Why was SUBTERFUGUE written?</h3>
 
       <p>
-	We Unix/Linux users sometimes indulge ourselves in a bit of smugness
-	when we read about the incessant wave after wave of viruses that
-	plague the hapless legions of Windows users.  To a degree this feeling
-	is justified, as the security features of Windows 95/98 are a
-	generation behind Unix with respect to this sort of problem.
+	We users of <a
+	"http://www.gnu.org/gnu/why-gnu-linux.html">GNU/Linux</a> and other
+	Unix-like operating systems (collectively referred to here as *nix)
+	sometimes indulge in a bit of smugness when we read about the
+	ceaseless wave upon wave of viruses that plague those hapless legions
+	of the damned--Microsoft Windows users.  To a degree this feeling is
+	justified, as the security features of Windows are a generation behind
+	*nix with respect to this sort of problem.
 
       <p>
-	Our faith in the superiority of Unix security is somewhat misplaced,
-	though.  When people think of Unix security problems, they usually
-	think of security lapses caused by implementation and administration
-	mistakes.  These problems, though, are correctable and not due to
-	underlying design flaws.
+	Our faith in the superiority of *nix security is somewhat misplaced,
+	though.  For the coming battle, *nix is almost as defenseless as
+	scorned Windows.
 
       <p>
-	More serious than these user-versus-root problems are
-	user-versus-program problems.  Suppose you download a viewer program
-	from Redmond Pandemic, Inc., and run it.  At that point, that program
-	can do just about anything that you could with your account.  It can,
-	for example
+	When people think of *nix security problems, they usually think of
+	transitory security lapses caused by implementation and administration
+	mistakes, rather than the broken-by-design problems of Windows.
+	Historically, security has been thought of as a user-versus-root
+	problem.
+
+      <p>
+	Today, though, the user frequently <em>is</em> root (being the owner
+	and primary user of their Freenix PC) and faces instead the more
+	insidious user-versus-application problem.  Suppose you download a
+	viewer application from Redmond Pandemic, Inc., and run it.  At that
+	point, that application can do just about anything that you could do
+	using your account.  It can, for example
 
       <ul>
-	<li>surreptitiously monitor what you view with the program and report
-	back to RPI,
+	<li>surreptitiously monitor what you view and report back to RPI,
 	<li>steal your files, uploading them to the net,
 	<li>erase your files,
 	<li>make subtle modifications to your files, causing problems you may
 	not detect for a long time,
-	<li>install rogue programs (e.g., DDoS clients), 
-	<li>install Trojan clients in your path to capture your root password,
-	or passwords to other machines you have access to,
-	<li>send threatening or incriminating email to the FBI,
+	<li>install rogue applications (e.g., DDoS clients, password
+	sniffers),
+	<li>send threatening, incriminating, or libelous email,
+	<li>make financial transactions on your behalf,
 	<li>download incriminating files (e.g., child pornography) onto your
 	computer,
-	<li>etc.
+	<li>etc., etc.
       </ul>
 
       A lot of this you would probably detect eventually, and for some of
       these cases, you might have an action against RPI, assuming that you
-      could pinpoint them as the cause.  In the mean time, though, a great
-      deal of irreparable harm could occur.
+      could pinpoint them as the cause and summon the resources to engage them
+      legally.  In the mean time, though, you could suffer great, irreparable
+      harm.
 
       <p>
-	A similar problem is the system administrator's dilemma one might call
+	A related problem is the system administrator's dilemma one might call
 	<em>root roulette</em>.  In this situation, the administrator must run
 	some program (e.g., an installation program) as root, thereby putting
 	their entire system at the mercy of that program.  (This is
@@ -65,32 +74,38 @@
 	host from all networks (assuming the program doesn't need a network
 	connection), and carefully comparing the state of all files before and
 	after the program in question is run to ensure that nothing untoward
-	was done.  This is hardly ever practical, though.
+	was done.  This is simply unworkable in practice, though.
 
       <p>
-	So far, problems like these don't seem to be occurring with much
-	frequency.  This may be partly due to Linux's limited use as a client
-	OS up to this point.
+	So far, problems due to these shortcomings are relatively rare.  This
+	may be partly due to *nix's limited use as a client OS up to this
+	point.  But this respite won't last.
 
       <p>
-	This respite won't last.  There are corporations, entities out there
-	that don't see your computer as your property--they see <em>you</em>,
-	or at least your behavior while running their software, as
-	<em>their</em> property.  We see them pushing, stretching the
-	boundaries all the time.  Increases in computing power and network
-	bandwidth will make it more tempting for these entities to "borrow"
-	part of your computer for their purposes.
+	There are corporations, entities out there that don't see your
+	computer as your property--they see <em>you</em>, or at least your
+	behavior while running their software, as <em>their</em> property.  We
+	see them pushing, stretching the boundaries all the time.  Increases
+	in computing power and network bandwidth and changes in the
+	legislative environment are making it all the more tempting for these
+	entities to "borrow" part of your computer, and by extension part of
+	<em>you</em>, for their purposes.
 	  
       <p>
 	<strong>The primary goal of SUBTERFUGUE is to help you keep control of
-	your computer.</strong>  It can do this not only by flagging and
-	blocking errant program behavior, but also by allowing you to subvert
-	the goals of the program in a more general way by controlling its
-	reality.
+	your computer.</strong> It can do this not only by flagging and
+	blocking errant application behavior, but also by allowing you to
+	subvert the goals of the application in a more general way by
+	controlling its reality.  It's not meant as a replacement for using
+	free software, which is a key way for you to maintain control of your
+	computer, but it can help you to detect perfidy and regain control
+	over any software, free or not.
 
       <p>
-	The hoped-for effect of SUBTERFUGUE will be to help shift power away
-	from these control thieves and back into your hands.
+	Computers exist to serve humanity--not the other way around.
+
+      <p>
+	SUBTERFUGUE exists to shift power back to where it belongs--to you.
 
   </body>
 </html>

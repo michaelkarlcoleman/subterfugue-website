@@ -4,7 +4,7 @@
     <title>SUBTERFUGUE patches</title>
   </head>
 
-  <body bgcolor="#FFFFFF">
+  <body>
 
     <h1>SUBTERFUGUE Patches</h1>
 
@@ -14,14 +14,31 @@
       <strong>Good News:</strong> As of Linux 2.3.99-pre1, SUBTERFUGUE can be
       run without this patch; the <tt>--waitchannelhack</tt> flag must be used
       in this case.  The patch below is still recommended, though; as
-      SUBTERFUGUE will run significantly slower without it.
+      SUBTERFUGUE will run slower without it.
+
+    <ul>
+      <li><a href="ptrace-subterfugue-2.4.0-test9.patch.gz">patch for kernel 2.4.0-test9</a> 
+      <li><a href="ptrace-subterfugue-2.3.99-pre1.patch.gz">patch for kernel 2.3.99-pre1</a> 
+	[These patches require SUBTERFUGUE 0.1.2 or later, and include only
+	chunks for the first change below (the other changes are merged into
+	2.3.99-pre1).  These patches are backward compatible with existing
+	versions of strace--the strace patch below isn't required (and won't
+	work) with these patch.]
+    </ul>
+
+    <h3>Older Patches</h3>
 
     <p>
       For kernels prior to 2.3.99-pre1, a patch is required in order to run
-      SUBTERFUGUE.  We're working on getting the required features
-      incorporated for 2.4 (as the progression of patches shows).  The 2.3.39
-      patch should work down to at least 2.3.35, and might even work on 2.2.x
-      with adjustments.
+      SUBTERFUGUE.  The required features have been slowly merged into the 2.3
+      series (as the progression of patches shows).  The 2.3.39 patch should
+      work down to at least 2.3.35, and might even work on 2.2.x with some
+      effort.
+     
+    <p>
+      Note: The previous version of these patches had a small bug which broke
+      strace.  The fix is to change <tt>"if (!(current->ptrace &
+      PT_PTRACED))"</tt> to <tt>"if (!(p->ptrace & PT_PTRACED))"</tt> in fork.c.
 
     <ul>
       <li><a href="ptrace-subterfugue-2.3.39.patch.gz">patch for kernel 2.3.39</a>
@@ -34,13 +51,9 @@
 	chunks for the first two items (GETPPID is no longer needed).  This
 	patch is backward compatible with existing versions of strace--the
 	strace patch below isn't required (and won't work) with this patch.]
-      <li><a href="ptrace-subterfugue-2.3.99-pre1.patch.gz">patch for kernel 2.3.99-pre1</a> 
-	[This patch requires SUBTERFUGUE 0.1.2 or later, and includes only
-	chunks for the first item (the second change was merged in
-	2.3.99-pre1).  As above, this patch is backward compatible with
-	existing versions of strace--the strace patch below isn't required
-	(and won't work) with this patch.]
     </ul>
+
+    <h3>Changes Included in the Patch</h3>
 
     <p>
       Here are the changes included in the patch.  Most are fairly innocuous
@@ -49,8 +62,9 @@
       <ol>
 
       <li>The exit_code reported during PTRACE_SYSCALL stops now has its high
-	bit (0x80) set, to distinguish it from signal stops.  Unfortunately,
-	this breaks <a
+	bit (0x80) set, to distinguish it from signal stops.  In the new
+	patches, this is done in a backward-compatible way.  In the older
+	patches, this breaks <a
 	href="http://www.wi.leidenuniv.nl/~wichert/strace/"><tt>strace</tt></a>,
 	and probably any other program that uses PTRACE_SYSCALL (see
 	ptrace(2)).  The fix is pretty simple--just mask off the high bit (or
