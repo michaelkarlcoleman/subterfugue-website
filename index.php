@@ -7,14 +7,14 @@
   <body bgcolor="#FFFFFF" text="#000000">
     <img src="subterfugue.png" alt="SUBTERFUGUE">
     <hr noshade>
-    <em>Latest Version: 0.1.9 ("pagliacci")</em>
+    <em>Latest Version: 0.1.99 ("superstar")</em>
     <hr noshade>
 
     <p>
-      This is the SUBTERFUGUE project home page.  SUBTERFUGUE is a framework
-      for observing and playing with the reality of software; it's a
-      foundation for building tools to do tracing, sandboxing, and many other
-      things.  You could think of it as "<em>strace</em> meets <em>expect</em>."  
+      SUBTERFUGUE is a framework for observing and playing with the reality of
+      software; it's a foundation for building tools to do tracing,
+      sandboxing, and many other things.  You could think of it as
+      "<em>strace</em> meets <em>expect</em>."
 
 
     <h2>Features</h2>
@@ -50,9 +50,9 @@
 
     <h2>Trying it out</h2>
     <p>
-      You can <b>download</b> the latest version of SUBTERFUGUE from the
-      <a href="http://sourceforge.net/project/?group_id=1951">SUBTERFUGUE
-      project page</a> at SourceForge.
+      You can <b>download</b> the latest version of SUBTERFUGUE from the <a
+      href="http://sourceforge.net/project/?group_id=1951">SUBTERFUGUE project
+      page</a> at SourceForge.  A Debian package is now available, too.
 
     <p>
       SUBTERFUGUE still has rough edges.  You probably shouldn't use it in a
@@ -68,9 +68,8 @@
     <p>
       <b>As of 2.3.99-pre1, no kernel patch is required to run
       SUBTERFUGUE!</b> There is still a <a href="patches.html">patch</a>, but
-      SUBTERFUGUE will run without it--just a bit more slowly (see the
-      <tt>--waitchannelhack</tt> flag).  For earlier kernel versions, a kernel
-      <a href="patches.html">patch</a> is required.
+      SUBTERFUGUE will run without it--just a bit more slowly.  For earlier
+      kernel versions, the <a href="patches.html">patch</a> is required.
 
     <h2>Mailing Lists</h2>
 
