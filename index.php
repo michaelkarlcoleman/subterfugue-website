@@ -16,6 +16,32 @@
       sandboxing, and many other things.  You could think of it as
       "<em>strace</em> meets <em>expect</em>."
 
+      <hr>
+      <b>
+[2002-04-06] Update:
+<p>
+Regrettably, the SUBTERFUGUE project has been nearly dormant for over a year
+now, with just minimal updates to catch up to Python 2.1 and fix a few bugs.
+<p>
+It's become clear that I'm not going to have the time needed to properly
+maintain it and do the new development needed to turn it from an interesting
+(IMO) prototype to a reliable tool.  Therefore, I'm writing this to announce
+that I'm looking for one or more people to take it over.  If you're
+interested, or think you might be, please subscribe to subterfugue-dev and
+post a message indicating your interest (and maybe a bit about your skills
+and/or where you'd like to see SUBTERFUGUE go).
+<p>
+I will gladly offer information, advice and a roadmap of what I believe are
+the most important things that need to be fixed or implemented, but the future
+direction of SUBTERFUGUE will be up to you who take it over.
+<p>
+(If you're wondering, I've taken a job as a scientific programmer at a
+biomedical research facility, and learning bioinformatics and biology in
+general is taking up all of my time.)
+<p>
+--Mike
+      </b>
+      <hr>
 
     <h2>Features</h2>
     <ul>
